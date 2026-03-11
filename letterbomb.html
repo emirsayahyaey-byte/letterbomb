@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💥 HARFPATLAT</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><radialGradient id='bg' cx='50%' cy='50%' r='50%'><stop offset='0%' stop-color='%231a1a2e'/><stop offset='100%' stop-color='%230f0f1a'/></radialGradient></defs><rect width='100' height='100' rx='20' fill='url(%23bg)'/><text y='72' x='50' text-anchor='middle' font-size='62'>💣</text></svg>">
+<meta property="og:title" content="💥 HARFPATLAT">
+<meta property="og:description" content="Patlayıcı oluştur, sandboxa at, patlat!">
+<meta property="og:image" content="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 210'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%231a1a2e'/><stop offset='100%25' stop-color='%230a0a14'/></linearGradient></defs><rect width='400' height='210' fill='url(%23g)'/><text x='200' y='100' text-anchor='middle' font-size='64' font-family='serif'>💣💥🧨</text><text x='200' y='155' text-anchor='middle' font-size='28' font-family='serif' fill='%23FF3CAC' font-weight='bold'>HARFPATLAT</text><text x='200' y='185' text-anchor='middle' font-size='14' font-family='serif' fill='%23666688'>Patlayıcı oluştur · Sandboxa at · Patlat!</text></svg>">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#0f0f1a;height:100vh;overflow:hidden;font-family:'Nunito',sans-serif;}
+  .app{display:flex;height:100vh;}
+
+  .lsidebar{width:280px;flex-shrink:0;background:linear-gradient(160deg,#1a1a2e,#16213e);
+    border-right:2px solid #2a2a4a;padding:20px 16px;
+    display:flex;flex-direction:column;gap:14px;overflow-y:auto;z-index:20;
+    contain:layout style;}
+  .lsidebar::-webkit-scrollbar{width:3px;}
+  .lsidebar::-webkit-scrollbar-thumb{background:#2a2a4a;border-radius:3px;}
+
+  .top-bar{display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:'Fredoka One',cursive;font-size:22px;
+    background:linear-gradient(90deg,#FF3CAC,#FFD200,#00C9FF);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+  .lang-btn{display:flex;gap:4px;}
+  .lang-btn button{background:#1a1a2e;border:2px solid #2a2a4a;border-radius:8px;
+    color:#aaaacc;font-family:'Fredoka One',cursive;font-size:12px;padding:4px 9px;
+    cursor:pointer;transition:background 0.15s,border-color 0.15s,color 0.15s;}
+  .lang-btn button.active{background:linear-gradient(135deg,#FF3CAC,#784BA0);
+    border-color:#FF3CAC;color:#fff;}
+  .lang-btn button:hover:not(.active){background:#2a2a4a;color:#fff;}
+
+  .flabel{color:#666688;font-size:10px;font-weight:900;text-transform:uppercase;
+    letter-spacing:1.5px;margin-bottom:5px;display:block;}
+  #nameInput{width:100%;background:#0c0c18;border:2px solid #2a2a4a;border-radius:11px;
+    padding:10px 13px;color:#fff;font-family:'Fredoka One',cursive;font-size:18px;
+    outline:none;transition:border-color 0.2s;}
+  #nameInput:focus{border-color:#FF3CAC;}
+  #nameInput::placeholder{color:#2a2a4a;}
+
+  #lettersWrap{display:none;flex-direction:column;gap:5px;}
+  .letter-row{display:flex;align-items:center;gap:8px;background:#0c0c18;
+    border-radius:8px;padding:6px 10px;border:1px solid #222244;animation:rowIn 0.2s ease;}
+  @keyframes rowIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+  .lbadge{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;
+    justify-content:center;font-family:'Fredoka One',cursive;font-size:15px;color:#fff;flex-shrink:0;}
+  .lname{color:#9999bb;font-weight:700;font-size:11px;flex:1;}
+  .count-ctrl{display:flex;align-items:center;gap:4px;}
+  .cbtn{width:22px;height:22px;border-radius:5px;border:none;background:#222244;color:#fff;
+    font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background 0.15s;line-height:1;}
+  .cbtn:hover{background:#33336a;}.cbtn:active{transform:scale(0.88);}
+  .cinput{width:42px;background:#1a1a2e;border:2px solid #222244;border-radius:5px;color:#fff;
+    font-family:'Fredoka One',cursive;font-size:15px;text-align:center;outline:none;padding:2px;
+    transition:border-color 0.2s;-moz-appearance:textfield;}
+  .cinput:focus{border-color:#FF3CAC;}
+  .cinput::-webkit-outer-spin-button,.cinput::-webkit-inner-spin-button{-webkit-appearance:none;}
+
+  .btn-group{display:flex;flex-direction:column;gap:8px;margin-top:auto;flex-shrink:0;}
+  .create-btn{background:linear-gradient(135deg,#f7971e,#ffd200);border:none;border-radius:12px;
+    padding:13px;color:#1a1000;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;
+    transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 20px rgba(255,200,0,0.35);}
+  .create-btn:hover{transform:scale(1.04);box-shadow:0 6px 28px rgba(255,200,0,0.55);}
+  .create-btn:active{transform:scale(0.96);}
+  .create-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;box-shadow:none;}
+  .explodeall-btn{background:linear-gradient(135deg,#FF3CAC,#fc466b);border:none;border-radius:12px;
+    padding:13px;color:#fff;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;
+    transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 20px rgba(255,60,172,0.35);}
+  .explodeall-btn:hover{transform:scale(1.04);box-shadow:0 6px 28px rgba(255,60,172,0.6);}
+  .explodeall-btn:active{transform:scale(0.96);}
+  .explodeall-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;box-shadow:none;}
+
+  /* SANDBOX */
+  .sandbox{flex:1;position:relative;overflow:hidden;background:#08080f;user-select:none;}
+  .sb-bg{position:absolute;inset:0;
+    background-image:radial-gradient(circle,#1c1c36 1px,transparent 1px);
+    background-size:36px 36px;opacity:0.6;pointer-events:none;}
+  /* Canvas sits over bg but under objects */
+  #particleCanvas{position:absolute;inset:0;pointer-events:none;z-index:50;will-change:transform;}
+  .sb-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    color:#1c1c36;font-family:'Fredoka One',cursive;font-size:clamp(14px,2vw,26px);
+    text-align:center;pointer-events:none;line-height:1.8;user-select:none;
+    transition:opacity 0.4s;z-index:1;}
+
+  /* RIGHT PANEL */
+  .rpanel{width:60px;flex-shrink:0;background:linear-gradient(160deg,#1a1a2e,#16213e);
+    border-left:2px solid #2a2a4a;display:flex;flex-direction:column;align-items:center;
+    z-index:20;transition:width 0.3s cubic-bezier(.4,0,.2,1);overflow:hidden;contain:layout style;}
+  .rpanel.open{width:210px;}
+  .rpanel-toggle{width:100%;padding:16px 0;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;border-bottom:2px solid #2a2a4a;flex-shrink:0;background:transparent;
+    border-left:none;border-right:none;border-top:none;color:#fff;gap:8px;transition:background 0.15s;}
+  .rpanel-toggle:hover{background:rgba(255,255,255,0.05);}
+  .rpanel-toggle .ti{font-size:20px;flex-shrink:0;}
+  .rpanel-toggle .tl{font-family:'Fredoka One',cursive;font-size:13px;color:#aaaacc;
+    white-space:nowrap;opacity:0;transition:opacity 0.2s;}
+  .rpanel.open .tl{opacity:1;}
+  .rpanel-scroll{width:100%;overflow-y:auto;display:flex;flex-direction:column;flex:1;}
+  .rpanel-scroll::-webkit-scrollbar{width:3px;}
+  .rpanel-scroll::-webkit-scrollbar-thumb{background:#2a2a4a;border-radius:3px;}
+  .cat-label{font-family:'Fredoka One',cursive;font-size:10px;color:#444466;
+    text-transform:uppercase;letter-spacing:1px;padding:10px 12px 3px;
+    opacity:0;transition:opacity 0.15s;white-space:nowrap;}
+  .rpanel.open .cat-label{opacity:1;}
+  .items-grid{display:flex;flex-direction:column;gap:5px;padding:0 8px 12px;}
+  .ritem{display:flex;align-items:center;gap:9px;background:#0c0c18;border:1px solid #222244;
+    border-radius:9px;padding:8px 10px;cursor:pointer;transition:background 0.15s,transform 0.1s;
+    white-space:nowrap;}
+  .ritem:hover{background:#161630;transform:scale(1.04);}
+  .ritem:active{transform:scale(0.95);}
+  .ritem-icon{font-size:20px;flex-shrink:0;}
+  .ritem-name{font-family:'Fredoka One',cursive;font-size:13px;color:#cccce0;
+    opacity:0;transition:opacity 0.15s;white-space:nowrap;}
+  .rpanel.open .ritem-name{opacity:1;}
+
+  /* OBJECTS in sandbox */
+  .sb-obj{position:absolute;cursor:grab;display:flex;flex-direction:column;
+    align-items:center;gap:2px;animation:objPop 0.35s cubic-bezier(.175,.885,.32,1.4);
+    user-select:none;will-change:transform;z-index:5;}
+  .sb-obj.dragging{cursor:grabbing;z-index:100;}
+  .sb-obj .obj-label{font-family:'Fredoka One',cursive;font-size:10px;color:#ffffff99;
+    text-align:center;pointer-events:none;}
+  @keyframes objPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* BOMB */
+  .bomb{position:absolute;cursor:grab;display:flex;flex-direction:column;align-items:center;
+    gap:4px;animation:bombPop 0.45s cubic-bezier(.175,.885,.32,1.4);user-select:none;
+    will-change:transform;z-index:10;}
+  .bomb.dragging{cursor:grabbing;z-index:100;}
+  @keyframes bombPop{0%{transform:scale(0) rotate(-25deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+  .bomb-body{width:64px;height:64px;background:radial-gradient(circle at 33% 30%,#555,#111);
+    border-radius:50%;border:3px solid #444;display:flex;align-items:center;justify-content:center;
+    position:relative;box-shadow:inset 0 -5px 10px rgba(0,0,0,0.6),0 3px 12px rgba(0,0,0,0.6);}
+  .bomb-shine{position:absolute;top:10px;left:12px;width:14px;height:8px;
+    background:rgba(255,255,255,0.13);border-radius:50%;transform:rotate(-30deg);}
+  .bomb-fuse{position:absolute;top:-13px;right:12px;width:3px;height:14px;
+    background:linear-gradient(to top,#777,#cc8800);border-radius:2px;
+    transform:rotate(18deg);transform-origin:bottom;}
+  .bomb-spark{position:absolute;top:-22px;right:7px;font-size:12px;
+    animation:sparkle 0.28s infinite alternate;}
+  @keyframes sparkle{from{opacity:1;transform:scale(1) rotate(-12deg)}to{opacity:0.4;transform:scale(1.35) rotate(12deg)}}
+  .bomb-label{font-family:'Fredoka One',cursive;font-size:12px;color:#ffffffcc;
+    text-align:center;max-width:84px;word-break:break-all;
+    text-shadow:0 1px 5px rgba(0,0,0,0.9);line-height:1.2;}
+
+  /* FLASH overlay (single reused element) */
+  #flashEl{position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:0;
+    transition:opacity 0.05s;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="lsidebar">
+    <div class="top-bar">
+      <div class="logo" id="logoText">💥 HARFPATLAT</div>
+      <div class="lang-btn">
+        <button id="btnTR" class="active" onclick="setLang('tr')">TR</button>
+        <button id="btnEN" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+    <div>
+      <label class="flabel" id="labelName"></label>
+      <input type="text" id="nameInput" maxlength="20" oninput="onNameChange()">
+    </div>
+    <div id="lettersWrap">
+      <label class="flabel" id="labelCount"></label>
+      <div id="lettersSection"></div>
+    </div>
+    <div class="btn-group">
+      <button class="create-btn" id="createBtn" disabled onclick="createBomb()">
+        🧨 <span id="createBtnTxt"></span>
+      </button>
+      <button class="explodeall-btn" id="explodeAllBtn" disabled onclick="explodeAll()">
+        💥 <span id="explodeAllTxt"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sandbox" id="sandbox">
+    <div class="sb-bg"></div>
+    <canvas id="particleCanvas"></canvas>
+    <div class="sb-hint" id="sbHint"></div>
+  </div>
+
+  <div class="rpanel" id="rpanel">
+    <button class="rpanel-toggle" onclick="togglePanel()">
+      <span class="ti">🎭</span>
+      <span class="tl" id="panelToggleLabel"></span>
+    </button>
+    <div class="rpanel-scroll">
+      <div class="items-grid" id="itemsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Single shared flash element -->
+<div id="flashEl"></div>
+
+<script>
+/* ════════════════════════════════════════
+   TRANSLATIONS
+════════════════════════════════════════ */
+const T={
+  tr:{
+    logo:"💥 HARFPATLAT",labelName:"Patlayıcının ismi",labelCount:"Kaç tane patlar?",
+    placeholder:"Mesela: AHMET",createBtn:"PATLAYICI OLUŞTUR",explodeAll:"HEPSİNİ PATLAT",
+    panelLabel:"Nesneler",hint:"Sol taraftan patlayıcı oluştur 🧨\nSağdan karakter ekle 👉\nBombaya tıklayınca patlar! 💥",
+    letterSuffix:" harfi",
+    cats:{people:"👤 İnsanlar",animals:"🐾 Hayvanlar",objects:"📦 Nesneler"},
+    items:[
+      {cat:"people",icon:"🧑",name:"Adam"},{cat:"people",icon:"👩",name:"Kadın"},
+      {cat:"people",icon:"👦",name:"Çocuk"},{cat:"people",icon:"👴",name:"Dede"},
+      {cat:"people",icon:"🧙",name:"Büyücü"},{cat:"people",icon:"🦸",name:"Kahraman"},
+      {cat:"people",icon:"🤖",name:"Robot"},{cat:"people",icon:"👾",name:"Uzaylı"},
+      {cat:"animals",icon:"🐶",name:"Köpek"},{cat:"animals",icon:"🐱",name:"Kedi"},
+      {cat:"animals",icon:"🐘",name:"Fil"},{cat:"animals",icon:"🦁",name:"Aslan"},
+      {cat:"animals",icon:"🐸",name:"Kurbağa"},{cat:"animals",icon:"🐧",name:"Penguen"},
+      {cat:"animals",icon:"🦊",name:"Tilki"},{cat:"animals",icon:"🐉",name:"Ejderha"},
+      {cat:"objects",icon:"🖨️",name:"3D Yazıcı"},{cat:"objects",icon:"🏠",name:"Ev"},
+      {cat:"objects",icon:"🚗",name:"Araba"},{cat:"objects",icon:"🚀",name:"Roket"},
+      {cat:"objects",icon:"💻",name:"Bilgisayar"},{cat:"objects",icon:"📦",name:"Kutu"},
+      {cat:"objects",icon:"🏆",name:"Kupa"},{cat:"objects",icon:"🎮",name:"Oyun Konsolu"},
+    ]
+  },
+  en:{
+    logo:"💥 LETTERBOMB",labelName:"Explosive name",labelCount:"How many explode?",
+    placeholder:"E.g.: AHMET",createBtn:"CREATE EXPLOSIVE",explodeAll:"EXPLODE ALL",
+    panelLabel:"Objects",hint:"Create an explosive on the left 🧨\nAdd characters on the right 👉\nClick a bomb to detonate! 💥",
+    letterSuffix:" letter",
+    cats:{people:"👤 People",animals:"🐾 Animals",objects:"📦 Objects"},
+    items:[
+      {cat:"people",icon:"🧑",name:"Man"},{cat:"people",icon:"👩",name:"Woman"},
+      {cat:"people",icon:"👦",name:"Child"},{cat:"people",icon:"👴",name:"Grandpa"},
+      {cat:"people",icon:"🧙",name:"Wizard"},{cat:"people",icon:"🦸",name:"Hero"},
+      {cat:"people",icon:"🤖",name:"Robot"},{cat:"people",icon:"👾",name:"Alien"},
+      {cat:"animals",icon:"🐶",name:"Dog"},{cat:"animals",icon:"🐱",name:"Cat"},
+      {cat:"animals",icon:"🐘",name:"Elephant"},{cat:"animals",icon:"🦁",name:"Lion"},
+      {cat:"animals",icon:"🐸",name:"Frog"},{cat:"animals",icon:"🐧",name:"Penguin"},
+      {cat:"animals",icon:"🦊",name:"Fox"},{cat:"animals",icon:"🐉",name:"Dragon"},
+      {cat:"objects",icon:"🖨️",name:"3D Printer"},{cat:"objects",icon:"🏠",name:"House"},
+      {cat:"objects",icon:"🚗",name:"Car"},{cat:"objects",icon:"🚀",name:"Rocket"},
+      {cat:"objects",icon:"💻",name:"Computer"},{cat:"objects",icon:"📦",name:"Box"},
+      {cat:"objects",icon:"🏆",name:"Trophy"},{cat:"objects",icon:"🎮",name:"Game Console"},
+    ]
+  }
+};
+
+let lang='tr';
+function setLang(l){
+  lang=l;
+  document.getElementById('btnTR').classList.toggle('active',l==='tr');
+  document.getElementById('btnEN').classList.toggle('active',l==='en');
+  const t=T[l];
+  document.getElementById('logoText').textContent=t.logo;
+  document.getElementById('labelName').textContent=t.labelName;
+  document.getElementById('labelCount').textContent=t.labelCount;
+  document.getElementById('nameInput').placeholder=t.placeholder;
+  document.getElementById('createBtnTxt').textContent=t.createBtn;
+  document.getElementById('explodeAllTxt').textContent=t.explodeAll;
+  document.getElementById('panelToggleLabel').textContent=t.panelLabel;
+  document.getElementById('sbHint').innerHTML=t.hint.replace(/\n/g,'<br>');
+  buildPanel();
+  updateLetterRows(document.getElementById('nameInput').value);
+}
+
+/* ════════════════════════════════════════
+   CANVAS PARTICLE ENGINE
+════════════════════════════════════════ */
+const canvas=document.getElementById('particleCanvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+let rafId=null;
+const MAX_PARTICLES=600; // hard cap
+
+function resizeCanvas(){
+  const sb=document.getElementById('sandbox');
+  canvas.width=sb.clientWidth;
+  canvas.height=sb.clientHeight;
+}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas,{passive:true});
+
+// Pre-load font so canvas renders correctly
+document.fonts.ready.then(()=>{ /* font ready */ });
+
+function spawnParticles(cx,cy,snap){
+  // cx/cy are in viewport coords; convert to canvas coords
+  const rect=canvas.getBoundingClientRect();
+  const lx=cx-rect.left, ly=cy-rect.top;
+
+  // Count total new particles and respect cap
+  let total=0;
+  Object.values(snap).forEach(({count})=>total+=count);
+  const scale=Math.min(1, (MAX_PARTICLES-particles.length)/Math.max(total,1));
+
+  Object.entries(snap).forEach(([letter,{count,color}])=>{
+    const n=Math.round(count*scale);
+    for(let j=0;j<n;j++){
+      const angle=Math.random()*Math.PI*2;
+      const speed=8+Math.random()*16;
+      particles.push({
+        x:lx, y:ly,
+        vx:Math.cos(angle)*speed,
+        vy:Math.sin(angle)*speed,
+        spin:(Math.random()-0.5)*10,
+        rot:Math.random()*360,
+        size:20+Math.random()*34,
+        letter,color,alpha:1,life:1,
+        decay:0.010+Math.random()*0.007,
+      });
+    }
+  });
+
+  if(!rafId) rafId=requestAnimationFrame(tickParticles);
+}
+
+function tickParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const gravity=0.04;
+  let alive=false;
+
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.life-=p.decay;
+    if(p.life<=0){ particles.splice(i,1); continue; }
+    alive=true;
+    p.vy+=gravity;
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.rot+=p.spin;
+    p.vx*=0.94;
+    p.vy*=0.94;
+    p.alpha=p.life;
+
+    ctx.save();
+    ctx.globalAlpha=p.alpha;
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot*Math.PI/180);
+    ctx.font=`900 ${p.size}px 'Fredoka One', cursive`;
+    ctx.fillStyle=p.color;
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,0,0,0.4)';
+    ctx.shadowBlur=4;
+    ctx.fillText(p.letter,0,0);
+    ctx.restore();
+  }
+
+  if(alive){
+    rafId=requestAnimationFrame(tickParticles);
+  } else {
+    rafId=null;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+}
+
+/* ════════════════════════════════════════
+   FLASH (single reused element)
+════════════════════════════════════════ */
+const flashEl=document.getElementById('flashEl');
+let flashTimer=null;
+function doFlash(cx,cy){
+  if(flashTimer) clearTimeout(flashTimer);
+  flashEl.style.backgroundImage=`radial-gradient(circle at ${cx}px ${cy}px,rgba(255,210,0,0.65),transparent 48%)`;
+  flashEl.style.opacity='1';
+  flashEl.style.transition='opacity 0.05s';
+  flashTimer=setTimeout(()=>{
+    flashEl.style.transition='opacity 0.35s';
+    flashEl.style.opacity='0';
+  },60);
+}
+
+/* ════════════════════════════════════════
+   PANEL
+════════════════════════════════════════ */
+function buildPanel(){
+  const t=T[lang], grid=document.getElementById('itemsGrid');
+  grid.innerHTML='';
+  const frag=document.createDocumentFragment();
+  let lastCat=null;
+  t.items.forEach(item=>{
+    if(item.cat!==lastCat){
+      lastCat=item.cat;
+      const lbl=document.createElement('div');
+      lbl.className='cat-label';
+      lbl.textContent=t.cats[item.cat];
+      frag.appendChild(lbl);
+    }
+    const el=document.createElement('div');
+    el.className='ritem';
+    el.innerHTML=`<span class="ritem-icon">${item.icon}</span><span class="ritem-name">${item.name}</span>`;
+    el.onclick=()=>spawnObject(item.icon,item.name);
+    frag.appendChild(el);
+  });
+  grid.appendChild(frag);
+}
+function togglePanel(){ document.getElementById('rpanel').classList.toggle('open'); }
+
+/* ════════════════════════════════════════
+   LETTER SIDEBAR
+════════════════════════════════════════ */
+const COLORS=["#FF3CAC","#784BA0","#2B86C5","#F7971E","#FFD200","#00C9FF","#92FE9D","#FC466B","#3F5EFB","#43E97B","#F953C6","#FF6B6B"];
+let letterCounts={};
+let sandboxItems=0;
+
+function onNameChange(){
+  const name=document.getElementById('nameInput').value;
+  document.getElementById('createBtn').disabled=!name.trim();
+  updateLetterRows(name);
+}
+
+function updateLetterRows(name){
+  const unique=[...new Set(name.toUpperCase().replace(/\s/g,'').split(''))].filter(Boolean);
+  const wrap=document.getElementById('lettersWrap');
+  const section=document.getElementById('lettersSection');
+  if(!unique.length){wrap.style.display='none';return;}
+  wrap.style.display='flex';wrap.style.flexDirection='column';wrap.style.gap='5px';
+  unique.forEach(l=>{if(letterCounts[l]===undefined)letterCounts[l]=5;});
+  Object.keys(letterCounts).forEach(l=>{if(!unique.includes(l))delete letterCounts[l];});
+  const frag=document.createDocumentFragment();
+  const suffix=T[lang].letterSuffix;
+  unique.forEach((letter,i)=>{
+    const color=COLORS[i%COLORS.length];
+    const row=document.createElement('div');row.className='letter-row';
+    row.innerHTML=`
+      <div class="lbadge" style="background:${color}">${letter}</div>
+      <span class="lname">"${letter}"${suffix}</span>
+      <div class="count-ctrl">
+        <button class="cbtn" onclick="chCount('${letter}',-1)">−</button>
+        <input class="cinput" id="cnt-${letter}" type="number" min="1" max="50" value="${letterCounts[letter]}" oninput="setCount('${letter}',this.value)">
+        <button class="cbtn" onclick="chCount('${letter}',1)">+</button>
+      </div>`;
+    frag.appendChild(row);
+  });
+  section.innerHTML='';
+  section.appendChild(frag);
+}
+function setCount(l,v){let n=parseInt(v);if(isNaN(n)||n<1)n=1;if(n>50)n=50;letterCounts[l]=n;}
+function chCount(l,d){
+  letterCounts[l]=Math.min(50,Math.max(1,(letterCounts[l]||5)+d));
+  const el=document.getElementById('cnt-'+l);if(el)el.value=letterCounts[l];
+}
+
+/* ════════════════════════════════════════
+   DRAG — RAF-based, no layout thrashing
+════════════════════════════════════════ */
+let drag=null;
+let pendingX=0, pendingY=0, dragRaf=null;
+
+function applyDrag(){
+  dragRaf=null;
+  if(!drag)return;
+  drag.el.style.left=pendingX+'px';
+  drag.el.style.top=pendingY+'px';
+}
+
+function onMove(cx,cy){
+  if(!drag)return;
+  const sb=document.getElementById('sandbox');
+  const r=sb.getBoundingClientRect();
+  pendingX=Math.max(0,Math.min(sb.clientWidth-drag.el.offsetWidth,  cx-r.left-drag.offX));
+  pendingY=Math.max(0,Math.min(sb.clientHeight-drag.el.offsetHeight, cy-r.top -drag.offY));
+  if(!dragRaf) dragRaf=requestAnimationFrame(applyDrag);
+}
+function onUp(){
+  if(drag){drag.el.classList.remove('dragging');drag=null;}
+  if(dragRaf){cancelAnimationFrame(dragRaf);dragRaf=null;}
+}
+
+document.addEventListener('mousemove',e=>onMove(e.clientX,e.clientY));
+document.addEventListener('mouseup',onUp);
+document.addEventListener('touchmove',e=>{
+  if(!drag)return;
+  e.preventDefault();
+  onMove(e.touches[0].clientX,e.touches[0].clientY);
+},{passive:false});
+document.addEventListener('touchend',onUp);
+
+function makeDraggable(el){
+  el.addEventListener('mousedown',e=>{
+    e.preventDefault();
+    const r=el.getBoundingClientRect();
+    drag={el,offX:e.clientX-r.left,offY:e.clientY-r.top};
+    el.classList.add('dragging');
+  });
+  el.addEventListener('touchstart',e=>{
+    const t=e.touches[0],r=el.getBoundingClientRect();
+    drag={el,offX:t.clientX-r.left,offY:t.clientY-r.top};
+    el.classList.add('dragging');
+  },{passive:true});
+}
+
+/* ════════════════════════════════════════
+   SPAWN OBJECT
+════════════════════════════════════════ */
+function spawnObject(icon,name){
+  const sb=document.getElementById('sandbox');
+  const x=80+Math.random()*(sb.clientWidth-200);
+  const y=60+Math.random()*(sb.clientHeight-160);
+  const el=document.createElement('div');
+  el.className='sb-obj';
+  el.style.cssText=`left:${x}px;top:${y}px`;
+  el.innerHTML=`<span style="font-size:40px;pointer-events:none">${icon}</span><div class="obj-label">${name}</div>`;
+  makeDraggable(el);
+  sb.appendChild(el);
+  sandboxItems++;
+  document.getElementById('sbHint').style.opacity='0';
+  updateExplodeAll();
+}
+
+/* ════════════════════════════════════════
+   BOMBS
+════════════════════════════════════════ */
+const bombs=new Map();
+
+function createBomb(){
+  const name=document.getElementById('nameInput').value.trim();
+  if(!name)return;
+  const unique=[...new Set(name.toUpperCase().replace(/\s/g,'').split(''))].filter(Boolean);
+  const snap={};
+  unique.forEach((l,i)=>{snap[l]={count:letterCounts[l]||5,color:COLORS[i%COLORS.length]};});
+
+  const sb=document.getElementById('sandbox');
+  const x=60+Math.random()*(sb.clientWidth-180);
+  const y=60+Math.random()*(sb.clientHeight-180);
+
+  const bomb=document.createElement('div');
+  bomb.className='bomb';
+  bomb.style.cssText=`left:${x}px;top:${y}px`;
+  bomb.innerHTML=`
+    <div class="bomb-body">
+      <div class="bomb-fuse"></div><div class="bomb-spark">✨</div><div class="bomb-shine"></div>
+      <span style="font-size:26px;z-index:1;position:relative;pointer-events:none">💣</span>
+    </div>
+    <div class="bomb-label">${name.toUpperCase()}</div>
+    <div style="font-family:'Nunito',sans-serif;font-size:9px;color:#ffffff44;margin-top:-2px;pointer-events:none">${lang==='tr'?'✋ sürükle · 👆 patlat':'✋ drag · 👆 click to boom'}</div>`;
+
+  let mouseDownTime=0;
+  let startPos={x:0,y:0};
+  bomb.addEventListener('mousedown',e=>{
+    e.preventDefault();
+    mouseDownTime=Date.now();
+    startPos={x:e.clientX,y:e.clientY};
+    const r=bomb.getBoundingClientRect();
+    drag={el:bomb,offX:e.clientX-r.left,offY:e.clientY-r.top};
+    bomb.classList.add('dragging');
+  });
+  bomb.addEventListener('touchstart',e=>{
+    mouseDownTime=Date.now();
+    const t=e.touches[0];
+    startPos={x:t.clientX,y:t.clientY};
+    const r=bomb.getBoundingClientRect();
+    drag={el:bomb,offX:t.clientX-r.left,offY:t.clientY-r.top};
+    bomb.classList.add('dragging');
+  },{passive:true});
+  bomb.addEventListener('click',e=>{
+    const moved=Math.hypot(e.clientX-startPos.x,e.clientY-startPos.y);
+    if(Date.now()-mouseDownTime<350 && moved<8) detonateBomb(bomb,snap);
+  });
+
+  document.getElementById('sandbox').appendChild(bomb);
+  bombs.set(bomb,snap);
+  sandboxItems++;
+  document.getElementById('sbHint').style.opacity='0';
+  updateExplodeAll();
+}
+
+function updateExplodeAll(){
+  document.getElementById('explodeAllBtn').disabled=bombs.size===0;
+}
+function explodeAll(){
+  if(!bombs.size)return;
+  [...bombs.entries()].forEach(([bomb,snap],i)=>{
+    setTimeout(()=>detonateBomb(bomb,snap),i*110);
+  });
+}
+
+/* ════════════════════════════════════════
+   DETONATE
+════════════════════════════════════════ */
+function detonateBomb(bomb,snap){
+  if(!bomb.isConnected)return;
+  const rect=bomb.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+
+  doFlash(cx,cy);
+  spawnParticles(cx,cy,snap);
+
+  // Shake nearby objects (batch getBoundingClientRect reads first)
+  const objs=[...document.querySelectorAll('.sb-obj')];
+  const rects=objs.map(o=>o.getBoundingClientRect());
+  objs.forEach((obj,i)=>{
+    const or=rects[i];
+    const ox=or.left+or.width/2, oy=or.top+or.height/2;
+    if(Math.hypot(ox-cx,oy-cy)<260){
+      obj.style.transition='transform 0.08s';
+      obj.style.transform='scale(1.25) rotate(12deg)';
+      setTimeout(()=>{obj.style.transform='scale(1) rotate(-8deg)';},100);
+      setTimeout(()=>{obj.style.transform='';obj.style.transition='';},220);
+    }
+  });
+
+  bomb.style.transition='transform 0.12s,opacity 0.12s';
+  bomb.style.transform='scale(2.5)';
+  bomb.style.opacity='0';
+  setTimeout(()=>{
+    bomb.remove();
+    bombs.delete(bomb);
+    sandboxItems--;
+    updateExplodeAll();
+    if(sandboxItems<=0) document.getElementById('sbHint').style.opacity='1';
+  },140);
+}
+
+// Init
+setLang('tr');
+</script>
+</body>
+</html>
